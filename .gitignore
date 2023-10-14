@@ -1,0 +1,13 @@
+# Data
+/archive
+/BraTS h5py
+/output
+
+# Idea
+.idea
+
+# Internal
+.DS_Store
+
+# Poetry
+__pycache__/*
