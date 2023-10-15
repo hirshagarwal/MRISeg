@@ -19,25 +19,56 @@ def init():
     net.zero_grad()
 
 
-def preview_images(outputs, seg, epoch, i):
-    fig = plt.figure(figsize=(6, 6))
-
+def preview_images(image, outputs, seg, epoch, i):
+    fig = plt.figure(figsize=(9, 9))
+    fig.set_figheight(12)
+    fig.set_figwidth(12)
     # TODO: Only copy if on MPS
     outputs_local = outputs.cpu()
+    image_local = image.cpu()
+    output_count = 5
+    for idx in range(1, output_count + 1):
+        input_prev = image_local.detach().numpy()[idx]
 
-    output_prev = outputs_local.detach().numpy()[0, 0]
-    fig.add_subplot(2, 1, 1)
-    plt.imshow((output_prev * 255).astype(np.uint8))
-    fig.add_subplot(2, 1, 2)
-    plt.imshow(seg[0, 0])
+        ax = fig.add_subplot(5, output_count, idx)
+        ax.title.set_text("Input {} (T1)".format(idx))
+        ax.set_yticklabels([])
+        ax.set_xticklabels([])
+        plt.imshow(input_prev[0])
+
+        ax1 = fig.add_subplot(5, output_count, idx + output_count)
+        ax1.title.set_text("Input {} (T2)".format(idx))
+        ax1.set_yticklabels([])
+        ax1.set_xticklabels([])
+        plt.imshow(input_prev[1])
+
+        ax2 = fig.add_subplot(5, output_count, idx + (2 * output_count))
+        ax2.title.set_text("Input {} (FLAIR)".format(idx))
+        ax2.set_yticklabels([])
+        ax2.set_xticklabels([])
+        plt.imshow(input_prev[2])
+
+        ax3 = fig.add_subplot(5, output_count, idx + (3 * output_count))
+        ax3.title.set_text("Seg {}".format(idx))
+        ax3.set_yticklabels([])
+        ax3.set_xticklabels([])
+        plt.imshow(seg[idx, 0])
+
+        output_prev = outputs_local.detach().numpy()[idx, 0]
+        ax4 = fig.add_subplot(5, output_count, idx + (4 * output_count))
+        ax4.title.set_text("Output {}".format(idx))
+        ax4.set_yticklabels([])
+        ax4.set_xticklabels([])
+        plt.imshow(output_prev)
+
     plt.savefig('output/image_{0}_{1}'.format(epoch, i))
     plt.close()
 
 
 def train():
-    weights = torch.tensor(100).to(default_device)
-    criterion = nn.BCEWithLogitsLoss(pos_weight=weights)
-    optimizer = optim.SGD(net.parameters(), lr=0.005, momentum=0.9)
+    pos_weight = torch.tensor(25).to(default_device)
+    criterion = nn.BCEWithLogitsLoss(pos_weight=pos_weight)
+    optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
     volume_dataset = VolumeDataset("Training", transform=True)
     test_dataset = VolumeDataset("Validation", transform=True)
@@ -65,8 +96,8 @@ def train():
 
             end = time.time()
             # Monitor
-            if i % 10 == 0:
-                preview_images(outputs, seg, epoch, i)
+            if i % 100 == 0:
+                preview_images(image, outputs, seg, epoch, i)
                 print("Finished step: {0} with loss: {1:2f} - Last Batch Time: {2:2f}s".format(i, loss, end-start))
 
             # Stats
