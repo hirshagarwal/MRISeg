@@ -11,3 +11,6 @@
 
 # Poetry
 __pycache__/*
+
+# Models
+/model/*

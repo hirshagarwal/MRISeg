@@ -17,6 +17,7 @@ default_device = torch.device("mps")
 
 def init():
     net.zero_grad()
+    torch.save(net.state_dict(), "model/net")
 
 
 def preview_images(image, outputs, seg, epoch, i):
