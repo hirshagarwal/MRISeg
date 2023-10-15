@@ -20,6 +20,10 @@ def scale_data(input_data):
     return scaled_data
 
 
+def binarize_data(input_data):
+    return input_data > 0
+
+
 class VolumeDataset(Dataset):
     def __init__(self, path, transform=False, target_transform=None):
         self.path = path
@@ -60,7 +64,7 @@ class VolumeDataset(Dataset):
         seg_image = images[3, :, :]
 
         if self.transform:
-            return np.float32(scale_data(train_images)), np.float32(scale_data(np.array([seg_image])))
+            return np.float32(scale_data(train_images)), np.float32(binarize_data(np.array([seg_image])))
         return train_images, seg_image
 
     def get_item(self, idx):
