@@ -21,17 +21,22 @@ def init():
 
 def preview_images(outputs, seg, epoch, i):
     fig = plt.figure(figsize=(6, 6))
+
+    # TODO: Only copy if on MPS
     outputs_local = outputs.cpu()
+
     output_prev = outputs_local.detach().numpy()[0, 0]
     fig.add_subplot(2, 1, 1)
     plt.imshow((output_prev * 255).astype(np.uint8))
     fig.add_subplot(2, 1, 2)
     plt.imshow(seg[0, 0])
     plt.savefig('output/image_{0}_{1}'.format(epoch, i))
+    plt.close()
 
 
 def train():
-    criterion = nn.BCELoss()
+    weights = torch.tensor(100).to(default_device)
+    criterion = nn.BCEWithLogitsLoss(pos_weight=weights)
     optimizer = optim.SGD(net.parameters(), lr=0.005, momentum=0.9)
 
     volume_dataset = VolumeDataset("Training", transform=True)

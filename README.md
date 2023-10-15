@@ -1,6 +1,6 @@
 # MRISeg
 Re-trainable MRI image segmentation model with Metal Performance Shader acceleration.
-
+Model is based on original [SegNet Paper](https://arxiv.org/pdf/1511.00561.pdf)
 ## Training Data
 The data used for training the initial model is the BraTS2020 data found here:
 [BraTS2020](https://www.kaggle.com/datasets/awsaf49/brats20-dataset-training-validation?rvi=1)
