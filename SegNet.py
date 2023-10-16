@@ -113,8 +113,6 @@ class NeuralNetwork(nn.Module):
         x, ind5 = self.MaxEn(x)
 
         # Decode
-        print(size4)
-        print(x.shape)
         x = self.MaxDe(x, ind5, output_size=size4)
         x = F.relu(self.debn1(self.deconv1(x)))
         x = F.relu(self.debn2(self.deconv2(x)))
