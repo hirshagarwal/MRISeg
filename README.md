@@ -13,6 +13,10 @@ been trained on a specific data type (e.g. MRI Brain) and then generalizing it t
 in a similar domain seems like a more efficient approach. Hopefully this model will be able to 
 create performant image segmentation for various radiology or pathology based tasks in the future.
 
+The ultimate goal of this project is to be a plug and play model where a small amount of new training
+data in an associated can be used as transfer learning data for a general purpose identification and segmentation
+model.
+
 ## Training Data
 The data used for training the initial model is the BraTS2020 data found here:
 [BraTS2020](https://www.kaggle.com/datasets/awsaf49/brats20-dataset-training-validation?rvi=1)
@@ -62,3 +66,13 @@ segmentation maps. This combined with the relatively small tumor size creates a 
 weighting (i.e. a model outputting 100% blank images will have a relatively high accuracy). In order to
 combat this a positive output weighting is applied the loss algorithm.
 ![Example Trained Image](images/image_1_200.png)
+
+## Technical
+
+### Running the Model
+This project is entirely written in Python with Poetry as the package manager. The `poetry.lock` and
+`pyproject.toml` files should allow poetry to create a consistent environment on other machines.
+
+The poetry environment should be installed using `poetry install`.
+
+Files (e.g. Train.py) can be run using `poetry run python Train.py`.
