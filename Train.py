@@ -132,7 +132,6 @@ def preview():
 
     image = out[0].detach().numpy()
     image = image.transpose(1, 2, 0)
-    # im = (image * 255).astype(np.uint8)
     plt.imshow(image)
     plt.draw()
 
