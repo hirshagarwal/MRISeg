@@ -1,7 +1,8 @@
+from pathlib import Path
+
 import torch
 import time
 
-import numpy as np
 import torch.optim as optim
 
 from torch import nn
@@ -17,7 +18,21 @@ default_device = torch.device("mps")
 
 def init():
     net.zero_grad()
-    torch.save(net.state_dict(), "model/net")
+
+    model_path = Path("model/model.pth")
+    if model_path.is_file():
+        checkpoint = torch.load("model/model.pth")
+        net.load_state_dict(checkpoint['model_state_dict'])
+        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+        print("Model loaded")
+
+
+def save():
+    torch.save({
+        'model_state_dict': net.state_dict(),
+        'optimizer_state_dict': optimizer.state_dict()
+    }, "model/model.pth")
+    print("Model Saved")
 
 
 def preview_images(image, outputs, seg, epoch, i):
@@ -69,7 +84,6 @@ def preview_images(image, outputs, seg, epoch, i):
 def train():
     pos_weight = torch.tensor(25).to(default_device)
     criterion = nn.BCEWithLogitsLoss(pos_weight=pos_weight)
-    optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
     volume_dataset = VolumeDataset("Training", transform=True)
     test_dataset = VolumeDataset("Validation", transform=True)
@@ -99,6 +113,7 @@ def train():
             # Monitor
             if i % 100 == 0:
                 preview_images(image, outputs, seg, epoch, i)
+                save()
                 print("Finished step: {0} with loss: {1:2f} - Last Batch Time: {2:2f}s".format(i, loss, end-start))
 
             # Stats
@@ -124,6 +139,8 @@ def preview():
 
 if __name__ == "__main__":
     net = NeuralNetwork().to(default_device)
+    optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
+
     init()
 
     train()
