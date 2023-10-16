@@ -13,10 +13,10 @@ class NeuralNetwork(nn.Module):
 
         self.MaxEn = nn.MaxPool2d(2, stride=2, return_indices=True)
 
-        conv_kernel_size = 3
-        conv_padding = 1
-        deconv_kernel_size = 3
-        deconv_kernel_padding = 1
+        conv_kernel_size = 7
+        conv_padding = 3
+        deconv_kernel_size = 7
+        deconv_kernel_padding = 3
 
         self.conv1 = nn.Conv2d(3, 64, kernel_size=conv_kernel_size, padding=conv_padding)
         self.bn1 = nn.BatchNorm2d(64, momentum=0.5)
@@ -52,7 +52,7 @@ class NeuralNetwork(nn.Module):
         # Deconvolution Layers
 
         # General Max Pool 2D/Upsampling for DECODING layers
-        self.MaxDe = nn.MaxUnpool2d(2, stride=2)
+        self.MaxDe = nn.MaxUnpool2d(2, stride=2, padding=0)
 
         self.deconv1 = nn.Conv2d(512, 512, kernel_size=deconv_kernel_size, padding=deconv_kernel_padding)
         self.debn1 = nn.BatchNorm2d(512, momentum=0.5)
@@ -113,6 +113,8 @@ class NeuralNetwork(nn.Module):
         x, ind5 = self.MaxEn(x)
 
         # Decode
+        print(size4)
+        print(x.shape)
         x = self.MaxDe(x, ind5, output_size=size4)
         x = F.relu(self.debn1(self.deconv1(x)))
         x = F.relu(self.debn2(self.deconv2(x)))
@@ -136,6 +138,6 @@ class NeuralNetwork(nn.Module):
         x = F.relu(self.debn12(self.deconv12(x)))
         x = F.relu(self.debn13(self.deconv13(x)))
         # x = F.softmax(x, dim=2)
-        x = self.sig(x)
+        # x = self.sig(x)
         # x = (x > 0.5)
         return x
