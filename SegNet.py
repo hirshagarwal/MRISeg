@@ -13,10 +13,10 @@ class NeuralNetwork(nn.Module):
 
         self.MaxEn = nn.MaxPool2d(2, stride=2, return_indices=True)
 
-        conv_kernel_size = 7
-        conv_padding = 3
-        deconv_kernel_size = 7
-        deconv_kernel_padding = 3
+        conv_kernel_size = 5
+        conv_padding = 2
+        deconv_kernel_size = 5
+        deconv_kernel_padding = 2
 
         self.conv1 = nn.Conv2d(3, 64, kernel_size=conv_kernel_size, padding=conv_padding)
         self.bn1 = nn.BatchNorm2d(64, momentum=0.5)
@@ -136,6 +136,7 @@ class NeuralNetwork(nn.Module):
         x = F.relu(self.debn12(self.deconv12(x)))
         x = F.relu(self.debn13(self.deconv13(x)))
         # x = F.softmax(x, dim=2)
-        # x = self.sig(x)
-        # x = (x > 0.5)
+        x = self.sig(x)
+        # x = torch.as_tensor((x > 0.5), dtype=torch.float32)
+        # print(x)
         return x

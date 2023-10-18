@@ -13,7 +13,7 @@ from torch.utils.data import DataLoader
 
 
 device = "mps" if torch.backends.mps.is_available() else "cpu"
-default_device = torch.device("mps")
+default_device = torch.device(device)
 
 
 def init():
@@ -111,7 +111,7 @@ def train():
 
             end = time.time()
             # Monitor
-            if i % 100 == 0:
+            if i % 10 == 0:
                 preview_images(image, outputs, seg, epoch, i)
                 save()
                 print("Finished step: {0} with loss: {1:2f} - Last Batch Time: {2:2f}s".format(i, loss, end-start))
@@ -138,7 +138,7 @@ def preview():
 
 if __name__ == "__main__":
     net = NeuralNetwork().to(default_device)
-    optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
+    optimizer = optim.SGD(net.parameters(), lr=0.01, momentum=0.9)
 
     init()
 
