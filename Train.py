@@ -12,8 +12,7 @@ from VolumeDataset import VolumeDataset
 from torch.utils.data import DataLoader
 
 
-device = "mps" if torch.backends.mps.is_available() else "cpu"
-device = "cuda" if torch.cuda.is_available() else "cpu"
+device = "mps" if torch.backends.mps.is_available() else "cuda" if torch.cuda.is_available() else "cpu"
 default_device = torch.device(device)
 
 
@@ -112,7 +111,7 @@ def train():
 
             end = time.time()
             # Monitor
-            if i % 10 == 0:
+            if i % 100 == 0:
                 preview_images(image, outputs, seg, epoch, i)
                 save()
                 print("Finished step: {0} with loss: {1:2f} - Last Batch Time: {2:2f}s".format(i, loss, end-start))
