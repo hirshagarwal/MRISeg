@@ -82,13 +82,12 @@ def preview_images(image, outputs, seg, epoch, i):
 
 
 def train():
+    net.train()
     pos_weight = torch.tensor(25).to(default_device)
     criterion = nn.BCEWithLogitsLoss(pos_weight=pos_weight)
 
     volume_dataset = VolumeDataset("Training", transform=True)
-    test_dataset = VolumeDataset("Validation", transform=True)
     data_loader = DataLoader(volume_dataset, batch_size=10, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=10, shuffle=True)
 
     for epoch in range(10):
         running_loss = 0.0
