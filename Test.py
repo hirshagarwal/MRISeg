@@ -13,9 +13,9 @@ default_device = torch.device(device)
 def init():
     net.zero_grad()
 
-    model_path = Path("model/model.pth")
+    model_path = Path("model/model_trained_3.pth")
     if model_path.is_file():
-        checkpoint = torch.load("model/model.pth")
+        checkpoint = torch.load("model/model_trained_3.pth")
         net.load_state_dict(checkpoint['model_state_dict'])
         print("Model loaded")
 
